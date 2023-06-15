@@ -5,7 +5,6 @@ import axios from 'axios';
 import { Vehicle, VehicleCategory } from "../../types";
 import { useTranslation } from 'react-i18next';
 import useCategoryName from '../hooks/useCategoryName';
-import MapView, { Marker } from 'react-native-maps';
 import SimpleMap from '../components/SimpleMap';
 
 type Filter = {
@@ -40,6 +39,8 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     }, []);
 
     const handleToggleViewMode = () => {
+        // Если текущее состояние viewMode равна list, то поменять его состояние на map 
+        // иначе, если состояние viewMode равна map, то поменять его состояние на list
         setViewMode(viewMode === 'list' ? 'map' : 'list');
     };
 
@@ -94,6 +95,8 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+
+            {/* Блок навигации */}
             <View style={styles.controlButtons}>
                 <View style={styles.controlButtonsLeft}>
                     <TouchableOpacity
@@ -120,6 +123,8 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                     <Switch onValueChange={handleToggleViewMode} value={viewMode === 'map'} />
                 </View>
             </View>
+
+            {/* Модальное окно фильтрации */}
             <Modal visible={showFilters} animationType='slide'>
                 <View style={styles.filterContainer}>
                     <View>
@@ -139,6 +144,8 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </Modal>
+
+            {/* Отображение (карты или списка) по условию */}
             {viewMode === "map" ? (
                 <View style={styles.mapWrapper}>
                     <SimpleMap vehicles={filteredVehicles} />

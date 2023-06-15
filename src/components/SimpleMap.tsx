@@ -1,5 +1,5 @@
 import MapView, { Marker } from "react-native-maps";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { Vehicle } from "../../types";
 import useCategoryName from "../hooks/useCategoryName";
 
