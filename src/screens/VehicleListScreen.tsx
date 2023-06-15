@@ -6,6 +6,7 @@ import { Vehicle, VehicleCategory } from "../../types";
 import { useTranslation } from 'react-i18next';
 import useCategoryName from '../hooks/useCategoryName';
 import MapView, { Marker } from 'react-native-maps';
+import SimpleMap from '../components/SimpleMap';
 
 type Filter = {
     cargo: boolean;
@@ -139,23 +140,8 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 </View>
             </Modal>
             {viewMode === "map" ? (
-                <View style={{ height: 600 }}>
-                    <MapView
-                        initialRegion={{
-                            latitude: filteredVehicles[0]?.lat,
-                            longitude: filteredVehicles[0]?.lng,
-                            latitudeDelta: 0.01,
-                            longitudeDelta: 0.01,
-                        }}
-                        style={{ flex: 1 }}
-                    >
-                        {filteredVehicles.map((item) => (
-                            <Marker
-                                key={item.id}
-                                coordinate={{ latitude: item.lat, longitude: item.lng }}
-                            />
-                        ))}
-                    </MapView>
+                <View style={styles.mapWrapper}>
+                    <SimpleMap vehicles={filteredVehicles} />
                 </View>
             ) : (
                 <FlatList
@@ -241,6 +227,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         gap: 10
+    },
+    mapWrapper: {
+        paddingBottom: 32,
+        height: "100%"
     }
 });
 

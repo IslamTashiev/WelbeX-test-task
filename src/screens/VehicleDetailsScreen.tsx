@@ -4,6 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { Vehicle } from '../../types';
 import useCategoryName from '../hooks/useCategoryName';
 import { useTranslation } from 'react-i18next';
+import SimpleMap from '../components/SimpleMap';
 
 interface VehicleScreenProps {
     route: any
@@ -26,16 +27,7 @@ const VehicleScreen: React.FC<VehicleScreenProps> = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <MapView style={styles.map}
-                initialRegion={{
-                    latitude: vehicle?.lat,
-                    longitude: vehicle?.lng,
-                    latitudeDelta: 0.01,
-                    longitudeDelta: 0.01,
-                }}
-            >
-                <Marker coordinate={{ latitude: vehicle?.lat, longitude: vehicle?.lng }} />
-            </MapView>
+            <SimpleMap vehicles={[vehicle]} />
             <View style={styles.vehicleInfo}>
                 <Text style={styles.vehicleCategory}>{getCategoryName(vehicle?.car_category)}</Text>
                 <Text style={styles.vehicleDriver}>{t("driver")}: {vehicle?.name}</Text>
