@@ -23,7 +23,6 @@
 
 1.Склонируйте репозиторий на свой локальный компьютер: git clone https://github.com/your-username/vehicle-tracking-app.git
 2.Перейдите в директорию проекта: cd vehicle-tracking-app
-
 3.Установите зависимости: npm install
 
 ## Запуск приложения
