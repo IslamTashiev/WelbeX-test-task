@@ -20,6 +20,8 @@
     "settings": "Settings",
     "display_mode": "Display mode",
     "map": "Map",
-    "list": "List"
+    "list": "List",
+    "choose_language": "Choose a language",
+    "save": "Save"
   }
 }

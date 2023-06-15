@@ -3,10 +3,13 @@ import { View, Text, Switch, StyleSheet, TouchableOpacity } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import i18n from "../locale/i18n"
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const SettingsScreen: React.FC = () => {
     const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+
     const navigate = useNavigation();
+    const { t } = useTranslation();
 
     const changeLanguage = (lang: string) => {
         setCurrentLanguage(lang);
@@ -19,7 +22,7 @@ const SettingsScreen: React.FC = () => {
     return (
         <View style={styles.container}>
             <View style={styles.filterContainer}>
-                <Text style={styles.filterTitle}>Выберите язык:</Text>
+                <Text style={styles.filterTitle}>{t("choose_language")}:</Text>
                 <View style={styles.filterItem}>
                     <CheckBox
                         checked={currentLanguage === "ru"}
@@ -36,7 +39,7 @@ const SettingsScreen: React.FC = () => {
                 </View>
             </View>
             <TouchableOpacity style={styles.applyButton} onPress={apply}>
-                <Text style={styles.applyButtonText}>Сохранить</Text>
+                <Text style={styles.applyButtonText}>{t("save")}</Text>
             </TouchableOpacity>
         </View>
     );
