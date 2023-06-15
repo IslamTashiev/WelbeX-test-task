@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Vehicle } from '../../types';
+import useCategoryName from '../hooks/useCategoryName';
+import { useTranslation } from 'react-i18next';
 
 interface VehicleScreenProps {
     route: any
@@ -9,6 +11,7 @@ interface VehicleScreenProps {
 
 const VehicleScreen: React.FC<VehicleScreenProps> = ({ route }) => {
     const vehicle: Vehicle = route.params.vehicle;
+    const { t } = useTranslation();
 
     const handleCall = () => {
         Linking.openURL(`tel:${vehicle.phone_number}`);
@@ -18,18 +21,7 @@ const VehicleScreen: React.FC<VehicleScreenProps> = ({ route }) => {
         Linking.openURL(`whatsapp://send?phone=${vehicle.phone_number}&text=Добрый день, подскажите пожалуйста, какой номер заказа у вас сейчас в работе`);
     };
 
-    const getCategoryText = (category: number): string => {
-        switch (category) {
-            case 1:
-                return 'Грузовая';
-            case 2:
-                return 'Пассажирская';
-            case 3:
-                return 'Спецтранспорт';
-            default:
-                return '';
-        }
-    };
+    const getCategoryName = useCategoryName();
 
 
     return (
@@ -45,15 +37,15 @@ const VehicleScreen: React.FC<VehicleScreenProps> = ({ route }) => {
                 <Marker coordinate={{ latitude: vehicle?.lat, longitude: vehicle?.lng }} />
             </MapView>
             <View style={styles.vehicleInfo}>
-                <Text style={styles.vehicleCategory}>{getCategoryText(vehicle?.car_category)}</Text>
-                <Text style={styles.vehicleDriver}>Имя водителя: {vehicle?.name}</Text>
-                <Text style={styles.vehicleDriver}>Контактный номер: {vehicle?.phone_number}</Text>
+                <Text style={styles.vehicleCategory}>{getCategoryName(vehicle?.car_category)}</Text>
+                <Text style={styles.vehicleDriver}>{t("driver")}: {vehicle?.name}</Text>
+                <Text style={styles.vehicleDriver}>{t("contact_number")}: {vehicle?.phone_number}</Text>
             </View>
             <TouchableOpacity style={styles.button} onPress={handleCall}>
-                <Text style={styles.buttonText}>Позвонить</Text>
+                <Text style={styles.buttonText}>{t("call")}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleChat}>
-                <Text style={styles.buttonText}>Написать</Text>
+                <Text style={styles.buttonText}>{t("write")}</Text>
             </TouchableOpacity>
         </View>
     );

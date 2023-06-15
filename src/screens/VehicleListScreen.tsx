@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import axios from 'axios';
-import { Vehicle, VehicleCategory } from "../../types"
-import { useNavigation } from '@react-navigation/native';
+import { Vehicle, VehicleCategory } from "../../types";
+import { useTranslation } from 'react-i18next';
+import useCategoryName from '../hooks/useCategoryName';
 
 type Filter = {
     cargo: boolean;
@@ -21,6 +22,15 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
     const [showFilters, setShowFilters] = useState(false);
+
+    const { t } = useTranslation();
+    const getCategoryName = useCategoryName();
+
+    const filters = [
+        { title: t("cargo"), key: "cargo" },
+        { title: t("passenger"), key: "passenger" },
+        { title: t("special_transport"), key: "special" },
+    ]
 
     useEffect(() => {
         fetchData();
@@ -53,9 +63,14 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         const finalData = filter.cargo || filter.passenger || filter.special ? filteredData : vehicles;
 
         setFilteredVehicles(finalData);
+        setShowFilters(!showFilters);
     };
-    // const n = useNavigation()
-    // n.setParams({vehicle: item})
+
+    const handleVehiclePress = (vehicle: Vehicle) => {
+        // Обработка нажатия на ТС
+        // Переход на экран с деталями ТС и передача данных о выбранном ТС
+        navigation.navigate('VehicleDetails', { vehicle });
+    };
 
     const renderVehicleItem = ({ item }: { item: Vehicle }) => {
         return (
@@ -64,66 +79,40 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 onPress={() => handleVehiclePress(item)}
             >
                 <Text style={styles.vehicleName}>{item.name}</Text>
-                <Text style={styles.vehicleDriver}>Водитель: {item.name}</Text>
-                <Text style={styles.vehicleCategory}>Категория: {getCategoryName(item.car_category)}</Text>
+                <Text style={styles.vehicleDriver}>{t("driver")}: {item.name}</Text>
+                <Text style={styles.vehicleCategory}>{t("category")}: {getCategoryName(item.car_category)}</Text>
             </TouchableOpacity>
         );
-    };
-
-    const getCategoryName = (category: VehicleCategory) => {
-        switch (category) {
-            case VehicleCategory.Cargo:
-                return 'Грузовой';
-            case VehicleCategory.Passenger:
-                return 'Пассажирский';
-            case VehicleCategory.Special:
-                return 'Спецтранспорт';
-            default:
-                return '';
-        }
-    };
-
-    const handleVehiclePress = (vehicle: Vehicle) => {
-        // Обработка нажатия на ТС
-        // Переход на экран с деталями ТС и передача данных о выбранном ТС
-        navigation.navigate('VehicleDetails', { vehicle })
-        navigation.setParams({ vehicle })
     };
 
     return (
         <View style={styles.container}>
             <TouchableOpacity
                 style={styles.filterToggle}
+                onPress={() => navigation.navigate("Settings")}
+            >
+                <Text style={styles.filterToggleText}>{t("language_settings")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.filterToggle}
                 onPress={() => setShowFilters(!showFilters)}
             >
-                <Text style={styles.filterToggleText}>{showFilters ? 'Скрыть фильтры' : 'Показать фильтры'}</Text>
+                <Text style={styles.filterToggleText}>{showFilters ? t("hide_filters") : t("show_filters")}</Text>
             </TouchableOpacity>
             {showFilters && (
                 <View style={styles.filterContainer}>
-                    <Text style={styles.filterTitle}>Фильтр по категориям:</Text>
-                    <View style={styles.filterItem}>
-                        <CheckBox
-                            checked={filter.cargo}
-                            onPress={() => setFilter({ ...filter, cargo: !filter.cargo })}
-                        />
-                        <Text style={styles.filterItemText}>Грузовой</Text>
-                    </View>
-                    <View style={styles.filterItem}>
-                        <CheckBox
-                            checked={filter.passenger}
-                            onPress={() => setFilter({ ...filter, passenger: !filter.passenger })}
-                        />
-                        <Text style={styles.filterItemText}>Пассажирский</Text>
-                    </View>
-                    <View style={styles.filterItem}>
-                        <CheckBox
-                            checked={filter.special}
-                            onPress={() => setFilter({ ...filter, special: !filter.special })}
-                        />
-                        <Text style={styles.filterItemText}>Спецтранспорт</Text>
-                    </View>
+                    <Text style={styles.filterTitle}>{t("select_filters")}:</Text>
+                    {filters.map((item) => (
+                        <View style={styles.filterItem} key={item.key}>
+                            <CheckBox
+                                checked={filter[item.key]}
+                                onPress={() => setFilter({ ...filter, [item.key]: !filter[item.key] })}
+                            />
+                            <Text style={styles.filterItemText}>{item.title}</Text>
+                        </View>
+                    ))}
                     <TouchableOpacity style={styles.applyButton} onPress={applyFilter}>
-                        <Text style={styles.applyButtonText}>Применить</Text>
+                        <Text style={styles.applyButtonText}>{t("apply")}</Text>
                     </TouchableOpacity>
                 </View>
             )}
@@ -175,6 +164,7 @@ const styles = StyleSheet.create({
     applyButtonText: {
         color: '#fff',
         fontWeight: 'bold',
+        textAlign: "center"
     },
     vehicleItem: {
         padding: 16,

@@ -1,0 +1,22 @@
+{
+  "translation": {
+    "view_mode": "View Mode",
+    "driver": "Driver",
+    "serial_number": "Serial number",
+    "category": "Category",
+    "select_filters": "Filter by category",
+    "show_filters": "Show filters",
+    "hide_filters": "Hide filters",
+    "apply": "Apply",
+    "contact_number": "Contact number",
+    "call": "Call",
+    "write": "Write",
+    "language_settings": "Customize languages",
+    "cargo": "Cargo",
+    "passenger": "Passenger",
+    "special_transport": "Special transport",
+    "list_of_vehicles": "List of vehicles",
+    "vehicle_details": "Vehicle details",
+    "settings": "Settings"
+  }
+}

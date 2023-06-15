@@ -1,0 +1,22 @@
+{
+  "translation": {
+    "view_mode": "Режим просмотра",
+    "driver": "Водитель",
+    "serial_number": "Порядковый номер",
+    "category": "Категория",
+    "select_filters": "Фильтровать по категориям",
+    "show_filters": "Показать фильтры",
+    "hide_filters": "Скрыть фильтры",
+    "apply": "Применить",
+    "contact_number": "Контактный номер",
+    "call": "Позвонить",
+    "write": "Написать",
+    "language_settings": "Настроить языки",
+    "cargo": "Грузовой",
+    "passenger": "Пассажирский",
+    "special_transport": "Спецтранспорт",
+    "list_of_vehicles": "Список ТС",
+    "vehicle_details": "Детали ТС",
+    "settings": "Настройки"
+  }
+}
