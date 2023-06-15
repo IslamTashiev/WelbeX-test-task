@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, Image, Switch } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import axios from 'axios';
 import { Vehicle, VehicleCategory } from "../../types";
 import { useTranslation } from 'react-i18next';
 import useCategoryName from '../hooks/useCategoryName';
+import MapView, { Marker } from 'react-native-maps';
 
 type Filter = {
     cargo: boolean;
@@ -22,6 +23,7 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
     const [showFilters, setShowFilters] = useState(false);
+    const [viewMode, setViewMode] = useState("list");
 
     const { t } = useTranslation();
     const getCategoryName = useCategoryName();
@@ -35,6 +37,10 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     useEffect(() => {
         fetchData();
     }, []);
+
+    const handleToggleViewMode = () => {
+        setViewMode(viewMode === 'list' ? 'map' : 'list');
+    };
 
     const fetchData = async () => {
         try {
@@ -87,40 +93,78 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                style={styles.filterToggle}
-                onPress={() => navigation.navigate("Settings")}
-            >
-                <Text style={styles.filterToggleText}>{t("language_settings")}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.filterToggle}
-                onPress={() => setShowFilters(!showFilters)}
-            >
-                <Text style={styles.filterToggleText}>{showFilters ? t("hide_filters") : t("show_filters")}</Text>
-            </TouchableOpacity>
-            {showFilters && (
+            <View style={styles.controlButtons}>
+                <View style={styles.controlButtonsLeft}>
+                    <TouchableOpacity
+                        style={styles.filterToggle}
+                        onPress={() => navigation.navigate("Settings")}
+                    >
+                        <Image
+                            source={{ uri: "https://cdn-icons-png.flaticon.com/512/2889/2889312.png" }}
+                            style={{ width: 24, height: 24 }}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.filterToggle}
+                        onPress={() => setShowFilters(!showFilters)}
+                    >
+                        <Image
+                            source={{ uri: "https://cdn-icons-png.flaticon.com/512/2676/2676818.png" }}
+                            style={{ width: 24, height: 24 }}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.controlButtonsLeft}>
+                    <Text>{t("display_mode")}: <Text style={{ fontWeight: "600" }}>{viewMode === 'map' ? t("map") : t("list")}</Text></Text>
+                    <Switch onValueChange={handleToggleViewMode} value={viewMode === 'map'} />
+                </View>
+            </View>
+            <Modal visible={showFilters} animationType='slide'>
                 <View style={styles.filterContainer}>
-                    <Text style={styles.filterTitle}>{t("select_filters")}:</Text>
-                    {filters.map((item) => (
-                        <View style={styles.filterItem} key={item.key}>
-                            <CheckBox
-                                checked={filter[item.key]}
-                                onPress={() => setFilter({ ...filter, [item.key]: !filter[item.key] })}
-                            />
-                            <Text style={styles.filterItemText}>{item.title}</Text>
-                        </View>
-                    ))}
+                    <View>
+                        <Text style={styles.filterTitle}>{t("select_filters")}:</Text>
+                        {filters.map((item) => (
+                            <View style={styles.filterItem} key={item.key}>
+                                <CheckBox
+                                    checked={filter[item.key]}
+                                    onPress={() => setFilter({ ...filter, [item.key]: !filter[item.key] })}
+                                />
+                                <Text style={styles.filterItemText}>{item.title}</Text>
+                            </View>
+                        ))}
+                    </View>
                     <TouchableOpacity style={styles.applyButton} onPress={applyFilter}>
                         <Text style={styles.applyButtonText}>{t("apply")}</Text>
                     </TouchableOpacity>
                 </View>
+            </Modal>
+            {viewMode === "map" ? (
+                <View style={{ height: 600 }}>
+                    <MapView
+                        initialRegion={{
+                            latitude: filteredVehicles[0]?.lat,
+                            longitude: filteredVehicles[0]?.lng,
+                            latitudeDelta: 0.01,
+                            longitudeDelta: 0.01,
+                        }}
+                        style={{ flex: 1 }}
+                    >
+                        {filteredVehicles.map((item) => (
+                            <Marker
+                                key={item.id}
+                                coordinate={{ latitude: item.lat, longitude: item.lng }}
+                            />
+                        ))}
+                    </MapView>
+                </View>
+            ) : (
+                <FlatList
+                    data={filteredVehicles}
+                    renderItem={renderVehicleItem}
+                    keyExtractor={(item) => item.id}
+                />
             )}
-            <FlatList
-                data={filteredVehicles}
-                renderItem={renderVehicleItem}
-                keyExtractor={(item) => item.id}
-            />
+
         </View>
     );
 };
@@ -132,7 +176,6 @@ const styles = StyleSheet.create({
     },
     filterToggle: {
         alignItems: 'center',
-        marginBottom: 16,
     },
     filterToggleText: {
         color: '#337ab7',
@@ -141,6 +184,10 @@ const styles = StyleSheet.create({
     },
     filterContainer: {
         marginBottom: 16,
+        paddingTop: 24,
+        paddingHorizontal: 16,
+        flex: 1,
+        justifyContent: "space-between",
     },
     filterTitle: {
         fontSize: 16,
@@ -185,6 +232,16 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginBottom: 4,
     },
+    controlButtons: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    controlButtonsLeft: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10
+    }
 });
 
 export default VehicleListScreen;

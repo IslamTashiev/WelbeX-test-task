@@ -17,6 +17,9 @@
     "special_transport": "Спецтранспорт",
     "list_of_vehicles": "Список ТС",
     "vehicle_details": "Детали ТС",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "display_mode": "Режим отображения",
+    "map": "Карта",
+    "list": "Список"
   }
 }

@@ -17,6 +17,9 @@
     "special_transport": "Special transport",
     "list_of_vehicles": "List of vehicles",
     "vehicle_details": "Vehicle details",
-    "settings": "Settings"
+    "settings": "Settings",
+    "display_mode": "Display mode",
+    "map": "Map",
+    "list": "List"
   }
 }
