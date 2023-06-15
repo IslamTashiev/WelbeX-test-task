@@ -24,7 +24,7 @@ const SimpleMap: React.FC<SimpleMapProps> = ({ vehicles }: SimpleMapProps) => {
 
 
     return (
-        <MapView style={styles.map} initialRegion={initialRegion} minZoomLevel={12}>
+        <MapView style={styles.map} initialRegion={initialRegion} maxZoomLevel={12}>
             {vehicles.map(vehicle => (
                 <Marker
                     key={vehicle.id}

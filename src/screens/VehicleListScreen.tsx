@@ -85,7 +85,7 @@ const VehicleListScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                 style={styles.vehicleItem}
                 onPress={() => handleVehiclePress(item)}
             >
-                <Text style={styles.vehicleName}>{item.name}</Text>
+                <Text style={styles.vehicleName}>#{item.serial_number}</Text>
                 <Text style={styles.vehicleDriver}>{t("driver")}: {item.name}</Text>
                 <Text style={styles.vehicleCategory}>{t("category")}: {getCategoryName(item.car_category)}</Text>
             </TouchableOpacity>
